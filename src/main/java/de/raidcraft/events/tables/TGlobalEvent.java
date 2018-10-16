@@ -7,17 +7,14 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.Instant;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "rc_events_players")
+@Table(name = "rc_events_global")
 @Entity
-public class TPlayerEvent extends BaseModel {
+public class TGlobalEvent extends BaseModel {
 
     private String event;
     private long executionCount;
     private Instant lastActivation;
-    private UUID playerId;
-    private String player;
 }

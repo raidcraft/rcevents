@@ -1,0 +1,3 @@
+entity-packages: de.raidcraft.events
+transactional-packages: de.raidcraft.events
+querybean-packages: de.raidcraft.events
