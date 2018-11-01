@@ -1,6 +1,9 @@
 package de.raidcraft.events.tables;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ebean.BaseModel;
+import de.raidcraft.events.RCEventsPlugin;
+import io.ebean.EbeanServer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,4 +23,9 @@ public class TPlayerEvent extends BaseModel {
     private Instant lastActivation;
     private UUID playerId;
     private String player;
+
+    @Override
+    protected EbeanServer database() {
+        return RaidCraft.getDatabase(RCEventsPlugin.class);
+    }
 }
