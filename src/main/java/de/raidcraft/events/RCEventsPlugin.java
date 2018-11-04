@@ -44,6 +44,11 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
             public void loadConfig(String id, ConfigurationSection config) {
                 registerEventTemplate(id, config);
             }
+
+            @Override
+            public void unloadConfig(String id) {
+                unregisterEventTemplate(id);
+            }
         });
 
         ActionAPI.register(this).global()
@@ -100,6 +105,22 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
         }
     }
 
+    public void unregisterEventTemplate(String id) {
+        ConfiguredEventTemplate template = loadedEventTemplates.remove(id);
+        if (template != null) {
+            disableListener(template);
+        }
+    }
+
+    public void disableListener(ConfiguredEventTemplate template) {
+        if (template == null) return;
+        if (template.isGlobal()) {
+            disableGlobalListener(template);
+        } else {
+            disablePlayerListener(template);
+        }
+    }
+
     public void enableGlobalListener(ConfiguredEventTemplate template) {
         if (template == null || !template.isGlobal()) return;
 
@@ -112,6 +133,16 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
         listener.registerListener();
         activeGlobalListeners.put(template.getIdentifier(), listener);
         debug(listener, "activated");
+    }
+
+    public void disableGlobalListener(ConfiguredEventTemplate template) {
+        if (template == null || !template.isGlobal()) return;
+
+        EventListener listener = activeGlobalListeners.remove(template.getIdentifier());
+        if (listener != null) {
+            listener.unregisterListener();
+            debug(listener, "deactivated");
+        }
     }
 
     public void enablePlayerListener(Player player, ConfiguredEventTemplate template) {
@@ -130,6 +161,18 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
         listener.registerListener();
         activePlayerListeners.get(player.getUniqueId()).put(listener.getListenerId(), listener);
         debug(listener, "activated for " + player.getName());
+    }
+
+    public void disablePlayerListener(ConfiguredEventTemplate template) {
+        if (template == null || template.isGlobal()) return;
+
+        for (Map.Entry<UUID, Map<String, EventListener>> listeners : activePlayerListeners.entrySet()) {
+            EventListener listener = listeners.getValue().remove(template.getIdentifier());
+            if (listener != null) {
+                listener.unregisterListener();
+                debug(listener, "unregistered for " + listeners.getKey());
+            }
+        }
     }
 
     public void debug(EventListener listener, String message) {
