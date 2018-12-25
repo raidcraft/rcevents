@@ -18,6 +18,7 @@ import de.raidcraft.events.tables.TPlayerEvent;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.PlayerUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -124,6 +125,13 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
     public void enableGlobalListener(ConfiguredEventTemplate template) {
         if (template == null || !template.isGlobal()) return;
 
+        if (getServer().getWorlds().stream()
+                .map(World::getName)
+                .noneMatch(world -> template.getWorlds().contains(world))) {
+            getLogger().info("Not activating global template " + template.getIdentifier() + " because no worlds match.");
+            return;
+        }
+
         if (activeGlobalListeners.containsKey(template.getIdentifier())) {
             getLogger().warning("Cannot activate global template " + template.getIdentifier() + " twice!");
             return;
@@ -147,6 +155,13 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
 
     public void enablePlayerListener(Player player, ConfiguredEventTemplate template) {
         if (template == null || template.isGlobal() || player == null) return;
+
+        if (getServer().getWorlds().stream()
+                .map(World::getName)
+                .noneMatch(world -> player.getWorld().getName().equalsIgnoreCase(world))) {
+            getLogger().info("Not activating player template " + template.getIdentifier() + " because no worlds match.");
+            return;
+        }
 
         if (!activePlayerListeners.containsKey(player.getUniqueId())) {
             activePlayerListeners.put(player.getUniqueId(), new HashMap<>());

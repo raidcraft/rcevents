@@ -45,6 +45,8 @@ public abstract class AbstractEventListener implements EventListener {
     @Override
     public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
         if (!getTemplate().isEnabled()) return false;
+        if (!getTemplate().getWorlds().contains(player.getWorld().getName())) return false;
+        
         if (getTemplate().getCooldown() > 0 && getLastActivation()
                 .map(instant -> instant.plusMillis(getTemplate().getCooldown()))
                 .map(instant -> instant.isAfter(Instant.now()))

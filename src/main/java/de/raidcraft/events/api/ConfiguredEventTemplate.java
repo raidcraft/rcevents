@@ -26,6 +26,7 @@ public class ConfiguredEventTemplate implements RequirementHolder, ActionHolder 
     private final long cooldown;
     private final boolean global;
     private final int executionCount;
+    private final Collection<String> worlds;
     private final Collection<Requirement<?>> requirements;
     private final Collection<Action<?>> actions;
     private final Collection<TriggerFactory> triggerFactories;
@@ -36,6 +37,7 @@ public class ConfiguredEventTemplate implements RequirementHolder, ActionHolder 
         this.cooldown = TimeUtil.parseTimeAsMillis(config.getString("cooldown", "0"));
         this.global = config.getBoolean("global", false);
         this.executionCount = config.getInt("execution-count", 0);
+        this.worlds = config.getStringList("worlds");
         this.requirements = ActionAPI.createRequirements(getIdentifier(), config.getConfigurationSection("requirements"));
         this.actions = ActionAPI.createActions(config.getConfigurationSection("actions"));
         this.triggerFactories = ActionAPI.createTrigger(config.getConfigurationSection("trigger"));
