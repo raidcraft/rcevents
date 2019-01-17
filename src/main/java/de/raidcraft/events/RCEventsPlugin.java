@@ -40,9 +40,9 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
     @Override
     public void enable() {
 
-        Quests.registerQuestLoader(new ConfigLoader(this, "event") {
+        Quests.registerQuestLoader(new ConfigLoader<RCEventsPlugin>(this, "event") {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<RCEventsPlugin> config) {
                 registerEventTemplate(id, config);
             }
 
@@ -59,9 +59,9 @@ public class RCEventsPlugin extends BasePlugin implements Listener {
     }
 
     private void load() {
-        ConfigUtil.loadRecursiveConfigs(this, "events", new ConfigLoader(this) {
+        ConfigUtil.loadRecursiveConfigs(this, "events", new ConfigLoader<RCEventsPlugin>(this) {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<RCEventsPlugin> config) {
                 registerEventTemplate(id, config);
             }
         });
